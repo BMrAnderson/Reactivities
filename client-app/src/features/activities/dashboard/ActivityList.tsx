@@ -35,7 +35,7 @@ export const ActivityList: React.FC<IProps> = ({
                   onClick={() => selectActivity(activity.id)}
                 />
                  <Button
-                  inverted
+                  basic
                   floated="right"
                   content="Delete"
                   color="red"       
