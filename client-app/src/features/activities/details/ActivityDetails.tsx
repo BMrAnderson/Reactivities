@@ -7,12 +7,15 @@ interface IProps {
   setEditMode: (editMode: boolean) => void;
   setSelectedActivity: (activity: IActivity | null) => void;
   editMode: boolean;
+  submitting: boolean;
+  target: string
 }
 
 export const ActivityDetails: React.FC<IProps> = ({
   activity,
   setEditMode,
   setSelectedActivity,
+  submitting
 }) => {
   return (
     <Card fluid>
