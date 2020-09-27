@@ -9,6 +9,7 @@ import HomePage from "../../features/home/HomePage";
 import ActivityForm from "../../features/activities/form/ActivityForm";
 import ActivityDetails from "../../features/activities/details/ActivityDetails";
 
+
 const App: React.FC<RouteComponentProps> = ({location}) => {
   return (
     <Fragment>
