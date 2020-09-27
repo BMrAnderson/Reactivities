@@ -4,6 +4,8 @@ using System;
 using Domain;
 using MediatR;
 using Persistence;
+using System.Net;
+using Application.Errors;
 
 namespace Application.Activities
 {
@@ -26,6 +28,9 @@ namespace Application.Activities
             public async Task<Activity> Handle(Query request, CancellationToken ct)
             {
                 var activity = await _context.Activities.FindAsync(request.Id);
+
+                if (activity == null) 
+                throw new RestException(HttpStatusCode.NotFound, new {activity = "Not found"});
 
                 return activity;
             }
