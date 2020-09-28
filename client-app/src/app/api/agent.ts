@@ -2,12 +2,24 @@ import axios, { AxiosResponse } from 'axios';
 import { error } from 'console';
 import { IActivity } from '../models/activity';
 import { history } from '../..';
+import { toast } from 'react-toastify';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.response.use(undefined, error => {
-    if (error.response.status === 404) {
+    const {status, data, config} = error.response;
+    if (error.message === 'Network Error' && !error.response){
+        toast.error('Network error - make sure the API is running');
+    }
+
+    if (status === 404) {
         history.push('/notfound');
+    }
+    if (status === 404 && config.method === 'get' && data.errors.hasOwnProperty('id')){
+        history.push('/notfound');
+    }
+    if (status === 500){
+        toast.error('Server error - check the terminal for more info!');
     }
 })
 
