@@ -11,7 +11,6 @@ axios.interceptors.response.use(undefined, error => {
     if (error.message === 'Network Error' && !error.response){
         toast.error('Network error - make sure the API is running');
     }
-
     if (status === 404) {
         history.push('/notfound');
     }
