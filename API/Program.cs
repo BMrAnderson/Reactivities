@@ -1,3 +1,4 @@
+using Application;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.EntityFrameworkCore;
@@ -8,8 +9,15 @@ var services = builder.Services;
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
-services.AddDbContext<DataContext>(d => d.UseSqlite(builder.Configuration.GetConnectionString("Default")));
-services.RegisterInfrastructure();
+services.RegisterInfrastructure(builder.Configuration);
+services.RegisterApplication();
+services.AddCors(c =>
+{
+    c.AddPolicy("AllowClient", p =>
+    {
+        p.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+    });
+});
 
 var app = builder.Build();
 
@@ -21,6 +29,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowClient");
 
 app.UseAuthorization();
 

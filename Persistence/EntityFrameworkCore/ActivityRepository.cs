@@ -21,23 +21,29 @@ public class ActivityRepository : IActivityRepository
 
     public async Task<Activity> GetById(Guid id)
     {
-        var result = await _context.Activities.AsNoTracking().SingleAsync(s => s.Id == id);
+        var result = await _context.Activities.AsNoTracking().SingleOrDefaultAsync(s => s.Id == id);
 
         return result;
     }
 
-    public async Task Create(Activity entity)
+    public async Task<Guid> Create(Activity entity)
     {
         await _context.Activities.AddAsync(entity);
+        return entity.Id;
     }
 
     public async Task Update(Activity entity)
     {
-        _context.Activities.Update(entity);
+        await Task.Run(() => _context.Activities.Update(entity));
     }
 
     public async Task Remove(Activity entity)
+    { 
+        await Task.Run(() => _context.Activities.Remove(entity));
+    }
+
+    public async Task SaveAsync()
     {
-        _context.Activities.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 }
