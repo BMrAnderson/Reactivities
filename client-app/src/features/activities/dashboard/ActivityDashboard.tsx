@@ -12,6 +12,8 @@ interface ActivityDashboardRequestProps {
     onActivitySelectCancel: () => void,
     onFormOpen: (id : string) => void,
     onFormClose: () => void,
+    onCreateOrEditActivity: (activity: Activity) => void,
+    onDeleteActivity: (id: string) => void,
     editMode: boolean
 }
 
@@ -20,12 +22,16 @@ export default function ActivityDashboard({activities,
                                            onActivitySelect, 
                                            onActivitySelectCancel,
                                            onFormOpen, 
-                                           onFormClose,
+                                           onFormClose, 
+                                           onCreateOrEditActivity,
+                                           onDeleteActivity,
                                            editMode}: ActivityDashboardRequestProps) {
     return (
         <Grid>
             <Grid.Column width='10'>
-                <ActivityList activities={activities} onActivitySelect={onActivitySelect} />
+                <ActivityList activities={activities} 
+                              onActivitySelect={onActivitySelect} 
+                              onActivityDelete={onDeleteActivity}/>
             </Grid.Column>
             <Grid.Column width='6'>
                 {selectedActivity 
@@ -36,7 +42,8 @@ export default function ActivityDashboard({activities,
                 
                 {editMode 
                     && <ActivityForm activity={selectedActivity}
-                                     onFormClose={onFormClose}/>}
+                                     onFormClose={onFormClose}
+                                     onCreateOrEditActivity={onCreateOrEditActivity}/>}
             </Grid.Column>
         </Grid>
     )
