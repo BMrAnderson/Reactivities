@@ -1,30 +1,31 @@
 import React from "react";
 import {Button, Card, Icon, Image } from "semantic-ui-react";
+import LoadingIndicator from "../../../app/layout/LoadingIndicator";
 import { Activity } from "../../../app/models/Activity";
+import { useStore } from "../../../app/stores/store";
 
-interface ActivityDetailsRequestProps {
-    activity: Activity
-    onActivitySelectCancel : () => void,
-    onFormOpen: (id: string) => void
-}
-
-export default function ActivityDetails({activity, onActivitySelectCancel, onFormOpen}: ActivityDetailsRequestProps){
+export default function ActivityDetails() {
+    const {activityStore} = useStore();
+    const {selectedActivity, cancelSelectedActivity, openForm} = activityStore;
+    
+    if (!selectedActivity) return <LoadingIndicator />;
+    
     return (
         <Card fluid>
-            <Image src={`/assets/categoryImages/${activity.category}.jpg`} />
+            <Image src={`/assets/categoryImages/${selectedActivity?.category}.jpg`} />
             <Card.Content>
-                <Card.Header>{activity.title}</Card.Header>
+                <Card.Header>{selectedActivity.title}</Card.Header>
                 <Card.Meta>
-                    <span>{activity.date}</span>
+                    <span>{selectedActivity.date}</span>
                 </Card.Meta>
                 <Card.Description>
-                    {activity.description}
+                    {selectedActivity.description}
                 </Card.Description>
             </Card.Content>
             <Card.Content extra>
                 <Button.Group widths='2'>
-                    <Button onClick={() => onFormOpen(activity.id)} basic color='blue' content='Edit' />
-                    <Button onClick={onActivitySelectCancel} basic color='grey' content='Cancel' />
+                    <Button onClick={() => openForm(selectedActivity.id)} basic color='blue' content='Edit' />
+                    <Button onClick={cancelSelectedActivity} basic color='grey' content='Cancel' />
                 </Button.Group>
             </Card.Content>
         </Card>

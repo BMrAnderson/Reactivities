@@ -8,7 +8,8 @@ public static class ActivityServiceMapper
     public static GetActivityResponse Map(Activity activity)
     {
         var result = new GetActivityResponse
-        {
+        { 
+            Id          = activity.Id,
             Title       = activity.Title,
             Description = activity.Description,
             Category    = activity.Category,

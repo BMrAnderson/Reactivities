@@ -7,55 +7,29 @@ import {Activities, Activity } from '../models/Activity';
 import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import {v4 as uuid} from 'uuid';
+import agent from '../api/agent';
+import LoadingIndicator from './LoadingIndicator';
+import ActivityApiService from '../api/activityApiService';
+import { useStore } from '../stores/store';
+import { observer } from 'mobx-react-lite';
 
 
 const App = () => {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
-  const [editMode, setEditMode] = useState(false);
+  const {activityStore} = useStore();
   
-  const handleSelectActivity = (id: string) => setSelectedActivity(activities.find(a => a.id === id));
-  const handleCancelSelectActivity = () => setSelectedActivity(undefined);
-  const handleOpenForm = (id? : string) => {
-      id ? handleSelectActivity(id) : handleCancelSelectActivity();
-      setEditMode(true);
-  }
-  const handleFormClose = () => setEditMode(false);
-  const handleCreateOrEditActivity = (activity: Activity) => {
-      activity.id 
-          ? setActivities([...activities.filter(f => f.id !== activity.id), activity])
-          : setActivities([...activities, {...activity, id: uuid()}]);
-      setEditMode(false);
-      setSelectedActivity(activity);
-  }
-  const handleDeleteActivity = (id: string) => {
-      setActivities([...activities.filter(f => f.id !== id)])
-  }
     
   useEffect(() => {
-    axios.get<Activities>("http://localhost:5000/api/Activities")
-        .then((response) => {
-          setActivities(response.data.activities);
-        });
-  }, []);
+      activityStore.loadActivities();
+  }, [activityStore]);
   
-  return (
-    <Fragment>
-        <NavBar onFormOpen={handleOpenForm}/>
-        <Container style={{marginTop: '7em'}}>
-            <ActivityDashboard activities={activities}
-                               selectedActivity={selectedActivity}
-                               onActivitySelect={handleSelectActivity}
-                               onActivitySelectCancel={handleCancelSelectActivity}
-                               onFormOpen={handleOpenForm}
-                               onFormClose={handleFormClose}
-                               onCreateOrEditActivity={handleCreateOrEditActivity}
-                               onDeleteActivity={handleDeleteActivity}
-                               editMode={editMode}
-            />
-        </Container>
-    </Fragment>
-  );
+  return (activityStore.loadingInitial) ? (<LoadingIndicator content='Loading app...'/>) :
+      (<Fragment>
+            <NavBar />
+            <Container style={{marginTop: '7em'}}>
+                <ActivityDashboard  />
+            </Container>
+        </Fragment>
+      );
 }
 
-export default App;
+export default observer(App);

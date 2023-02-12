@@ -1,18 +1,22 @@
-import React from "react";
+import React, {SyntheticEvent, useState} from "react";
 import { Activities, Activity } from "../../../app/models/Activity";
 import {Button, Item, Label, List, Segment} from "semantic-ui-react";
+import { useStore } from "../../../app/stores/store";
+import { observer } from "mobx-react-lite";
 
-interface ActivityListRequestProps {
-    activities: Activity[],
-    onActivitySelect: (id: string) => void,
-    onActivityDelete: (id: string) => void
-}
-
-export default function ActivityList({activities, onActivitySelect, onActivityDelete}: ActivityListRequestProps){
+export default observer(function ActivityList() {
+    const {activityStore} = useStore();
+    const {loading, deleteActivity, selectActivity, activitiesByDate} = activityStore;
+    const [target, setTarget] = useState('');
+    const handleActivityDelete = (e: SyntheticEvent<HTMLButtonElement>, id: string) => {
+        setTarget(e.currentTarget.id);
+        deleteActivity(id);
+    }
+    
     return (
         <Segment>
             <Item.Group divided>
-                {activities.map(activity => (
+                {activitiesByDate.map(activity => (
                     <Item key={activity.id}>
                         <Item.Content>
                             <Item.Header as='a'>{activity.title}</Item.Header>
@@ -22,8 +26,8 @@ export default function ActivityList({activities, onActivitySelect, onActivityDe
                                 <div>{activity.city}, {activity.venue}</div>
                             </Item.Description>
                             <Item.Extra>
-                                <Button onClick={() => onActivitySelect(activity.id)} floated='right' color='blue' content='View' />
-                                <Button onClick={() => onActivityDelete(activity.id)} floated='right' color='red' content='Remove' />
+                                <Button onClick={() => selectActivity(activity.id)} floated='right' color='blue' content='View' />
+                                <Button id={activity.id} loading={loading && activity.id === target} onClick={(e) => handleActivityDelete(e, activity.id)} floated='right' color='red' content='Remove' />
                                 <Label basic content={activity.category}/>
                             </Item.Extra>
                         </Item.Content>
@@ -32,4 +36,4 @@ export default function ActivityList({activities, onActivitySelect, onActivityDe
             </Item.Group>
         </Segment>
     )
-}
+})
