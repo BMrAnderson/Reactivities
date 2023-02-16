@@ -12,24 +12,25 @@ import LoadingIndicator from './LoadingIndicator';
 import ActivityApiService from '../api/activityApiService';
 import { useStore } from '../stores/store';
 import { observer } from 'mobx-react-lite';
+import { Outlet, useLocation } from 'react-router-dom';
+import HomePage from '../../features/home/HomePage';
 
 
 const App = () => {
-  const {activityStore} = useStore();
-  
-    
-  useEffect(() => {
-      activityStore.loadActivities();
-  }, [activityStore]);
-  
-  return (activityStore.loadingInitial) ? (<LoadingIndicator content='Loading app...'/>) :
-      (<Fragment>
-            <NavBar />
-            <Container style={{marginTop: '7em'}}>
-                <ActivityDashboard  />
-            </Container>
-        </Fragment>
-      );
+   const location = useLocation(); 
+   
+   return (
+       <Fragment>
+           {location.pathname === '/' ? <HomePage /> : (
+               <Fragment>
+                   <NavBar />
+                   <Container style={{marginTop: '7em'}}>
+                       <Outlet />
+                   </Container>
+               </Fragment>
+           )}
+       </Fragment>
+   );
 }
 
 export default observer(App);
