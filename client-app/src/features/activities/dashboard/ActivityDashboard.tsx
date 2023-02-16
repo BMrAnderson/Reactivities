@@ -6,11 +6,12 @@ import { Activities, Activity } from "../../../app/models/Activity";
 import { useStore } from "../../../app/stores/store";
 import ActivityDetails from "../details/ActivityDetails";
 import ActivityForm from "../form/ActivityForm";
+import ActivityFilters from "./ActivityFilters";
 import ActivityList from "./ActivityList";
 
 export default observer(function ActivityDashboard(){
     const {activityStore} = useStore();
-    const {selectedActivity, editMode, activityRegistry, loadActivities} = activityStore;
+    const {activityRegistry, loadActivities, loadingInitial} = activityStore;
     
     useEffect(() => {
         if (activityRegistry.size <= 1) loadActivities();
@@ -24,7 +25,7 @@ export default observer(function ActivityDashboard(){
                 <ActivityList />
             </Grid.Column>
             <Grid.Column width='6'>
-                <h2>Activity Filters</h2>
+                <ActivityFilters />
             </Grid.Column>
         </Grid>
     )
